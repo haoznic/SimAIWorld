@@ -9,7 +9,8 @@ from django.shortcuts import render
 from django.template.defaulttags import register
 from googletrans import Translator
 
-from test import ChatGPT_request
+# from test import ChatGPT_request
+from test_tongyi import Tongyi_request
 
 PATH = "./master_movement.json"
 os.environ["http_proxy"] = "http://127.0.0.1:7890"
@@ -84,7 +85,7 @@ def translate_json_language(path: str) \
                                 conversation[0] = conversation[0].replace(en_name, ch_name)
                                 for en_n, ch_n in names_mapping.items():
                                     conversation[1] = conversation[1].replace(en_n.split(" ")[0], ch_n)
-                    entity[person]['description'] = ChatGPT_request(prompt + entity[person]['description'])
+                    entity[person]['description'] = Tongyi_request(prompt + entity[person]['description'])
                     print(entity[person]['description'])
                     # entity[person]['description'] = translator.translate(entity[person]['description'],
                     #                                                      src='auto', dest='zh-CN').text
@@ -93,7 +94,7 @@ def translate_json_language(path: str) \
                     # dest='zh-cn').text
                     if entity[person]['chat'] is not None:
                         for conversation in entity[person]['chat']:
-                            conversation[1] = ChatGPT_request(prompt + conversation[1])
+                            conversation[1] = Tongyi_request(prompt + conversation[1])
                             print(conversation[1])
                     # time.sleep(1)
     except Exception as e:

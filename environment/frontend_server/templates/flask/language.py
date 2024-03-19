@@ -10,7 +10,8 @@ from django.template.defaulttags import register
 from googletrans import Translator
 
 from environment.frontend_server.templates.flask.local import local_trans
-from test import ChatGPT_request
+# from test import ChatGPT_request
+from test_tongyi import Tongyi_request
 
 PATH = "./master_movement.json"
 os.environ["http_proxy"] = "http://127.0.0.1:7890"
@@ -98,7 +99,7 @@ def translate_json_language(path: str) \
                     # dest='zh-cn').text
                     if entity[person]['chat'] is not None:
                         for conversation in entity[person]['chat']:
-                            conversation[1] = ChatGPT_request(prompt + conversation[1])
+                            conversation[1] = Tongyi_request(prompt + conversation[1])
                             print(conversation[1])
                     # time.sleep(1)
     except Exception as e:

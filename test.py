@@ -16,22 +16,56 @@ TODO:
 import json
 import os
 import random
-import openai
+# import openai
 import time
 
 from dotenv import load_dotenv, find_dotenv
-from litellm import completion
-from gpt4all import GPT4All, Embed4All
+# from litellm import completion
+# from gpt4all import GPT4All, Embed4All
+from langchain_community.llms import Tongyi
 
-from reverie.backend_server.persona.prompt_template.gpt_structure import temp_sleep
-from reverie.backend_server.utils import *
+# from reverie.backend_server.persona.prompt_template.gpt_structure import temp_sleep
+# from reverie.backend_server.utils import *
 
-openai.api_key = random.choice(openai_api_key)
+# openai.api_key = random.choice(openai_api_key)
 os.environ["http_proxy"] = "http://127.0.0.1:7890"
 os.environ["https_proxy"] = "https://127.0.0.1:7890"
 
 load_dotenv(override=True)
 load_dotenv(find_dotenv(), override=True)
+
+
+import json
+
+with open("./reverie/config.json","r") as fp:
+    settings = json.load(fp)
+    os.environ["DASHSCOPE_API_KEY"] = settings["DASHSCOPE_API_KEY"]
+  
+
+def Tongyi_request(messages: object) -> object:
+    """
+      Given a prompt and a dictionary of GPT parameters, make a request to OpenAI
+      server and returns the response.
+      ARGS:
+        prompts: a str prompt
+        gpt_parameter: a python dictionary with the keys indicating the names of
+                       the parameter and the values indicating the parameter
+                       values.
+      RETURNS:
+        a str of GPT-3's response.
+    """
+    time.sleep(1)
+
+    try:
+        # openai call
+        llm = Tongyi()
+        llm.model_name = 'qwen-max'
+        response = llm.invoke(messages)
+
+        return response
+    except Exception as e:
+        return f"ChatGPT ERROR:{e}"
+    
 
 
 def ChatGPT_request(prompts: object) -> object:
@@ -212,10 +246,11 @@ prompt = """
 
 # 大模型表现有时不稳定，乱序或乱码等问题目前还在想办法解决
 def test():
-    print(f"""chatgpt result: {ChatGPT_request(prompt)}""")
-    print(f"""ChatGPT_turbo result: {ChatGPT_turbo_request(prompt)}""")
-    print(f"""chatgpt4 result: {GPT4_request(prompt)}""")
-    print(f"""localmodel result: {GPTLocal_request(prompt)}""")
+    # print(f"""chatgpt result: {ChatGPT_request(prompt)}""")
+    # print(f"""ChatGPT_turbo result: {ChatGPT_turbo_request(prompt)}""")
+    # print(f"""chatgpt4 result: {GPT4_request(prompt)}""")
+    # print(f"""localmodel result: {GPTLocal_request(prompt)}""")
+    print(f"""localmodel result: {Tongyi_request(prompt)}""")
 
 
 if __name__ == "__main__":
