@@ -4,6 +4,8 @@
 
 <p align="center" width="100%">
 
+fork from https://github.com/Turing-Project/SimAIWorld for study purpose only.
+
 本项目是以斯坦福开源项目 "[Generative Agents: Interactive Simulacra of Human Behavior](https://arxiv.org/abs/2304.03442)." 为基础，进行的魔改、汉化、优化与移动端适配开发，主要包含生成式多智能体的模拟仿真环境和对应的前端展示。此外，我们也保留了斯坦福原项目对于仿真的行为记录模块，可以离线本地进行环境replay
 
 ### 项目Feature

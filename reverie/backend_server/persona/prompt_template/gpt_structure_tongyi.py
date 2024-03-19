@@ -13,20 +13,45 @@ from utils import *
 
 # openai.api_key = random.choice(openai_api_key)
 
+from langchain_community.llms import Tongyi
+
+# set os path 
+import os
+import sys
+sys.path.append('../../../')
+
+with open("reverie/config.json","r") as fp:
+    settings = json.load(fp)
+    os.environ["DASHSCOPE_API_KEY"] = settings["DASHSCOPE_API_KEY"]  
+
+def Tongyi_request(prompt: object) -> object:
+    time.sleep()
+
+    try:
+        # llm call
+        llm = Tongyi()
+        llm.model_name = 'qwen-max'
+        messages=[{"role": "user", "content": prompt}]
+        response = llm.invoke(messages)
+        return response
+    except Exception as e:
+        return f"TongYi ERROR:{e}"
+    
 
 def temp_sleep(seconds=0.1):
     time.sleep(seconds)
 
 
 def ChatGPT_single_request(prompt):
-    temp_sleep()
-    openai.api_key = random.choice(openai_api_key)
+    return Tongyi_request(prompt)
+    # temp_sleep()
+    # openai.api_key = random.choice(openai_api_key)
 
-    completion = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return completion["choices"][0]["message"]["content"]
+    # completion = openai.ChatCompletion.create(
+    #     model="gpt-3.5-turbo",
+    #     messages=[{"role": "user", "content": prompt}]
+    # )
+    # return completion["choices"][0]["message"]["content"]
 
 
 # ============================================================================
@@ -35,28 +60,31 @@ def ChatGPT_single_request(prompt):
 
 def GPT4_request(prompt):
     """
-  Given a prompt and a dictionary of GPT parameters, make a request to OpenAI
-  server and returns the response. 
-  ARGS:
-    prompt: a str prompt
-    gpt_parameter: a python dictionary with the keys indicating the names of  
-                   the parameter and the values indicating the parameter 
-                   values.   
-  RETURNS: 
-    a str of GPT-3's response. 
-  """
-    temp_sleep()
+    Given a prompt and a dictionary of GPT parameters, make a request to OpenAI
+    server and returns the response. 
+    ARGS:
+        prompt: a str prompt
+        gpt_parameter: a python dictionary with the keys indicating the names of  
+                    the parameter and the values indicating the parameter 
+                    values.   
+    RETURNS: 
+        a str of GPT-3's response. 
+    """
+    return Tongyi_request(prompt)
 
-    try:
-        completion = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt}]
-        )
-        return completion["choices"][0]["message"]["content"]
 
-    except:
-        print("ChatGPT ERROR")
-        return "ChatGPT ERROR"
+    # temp_sleep()
+
+    # try:
+    #     completion = openai.ChatCompletion.create(
+    #         model="gpt-4",
+    #         messages=[{"role": "user", "content": prompt}]
+    #     )
+    #     return completion["choices"][0]["message"]["content"]
+
+    # except:
+    #     print("ChatGPT ERROR")
+    #     return "ChatGPT ERROR"
 
 
 def ChatGPT_request(prompt, gpt_parameter={}):
@@ -71,19 +99,20 @@ def ChatGPT_request(prompt, gpt_parameter={}):
   RETURNS: 
     a str of GPT-3's response. 
   """
-    # temp_sleep()
-    openai.api_key = random.choice(openai_api_key)
+    return Tongyi_request(prompt)
+    # # temp_sleep()
+    # openai.api_key = random.choice(openai_api_key)
 
-    try:
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}]
-        )
-        return completion["choices"][0]["message"]["content"]
+    # try:
+    #     completion = openai.ChatCompletion.create(
+    #         model="gpt-3.5-turbo",
+    #         messages=[{"role": "user", "content": prompt}]
+    #     )
+    #     return completion["choices"][0]["message"]["content"]
 
-    except Exception as e:
-        print(f"ChatGPT ERROR{e}")
-        return f"ChatGPT ERROR{e}"
+    # except Exception as e:
+    #     print(f"ChatGPT ERROR{e}")
+    #     return f"ChatGPT ERROR{e}"
 
 
 def GPT4_safe_generate_response(prompt,
@@ -215,25 +244,43 @@ def GPT_request(prompt, gpt_parameter):
   RETURNS: 
     a str of GPT-3's response. 
   """
-    temp_sleep()
-    openai.api_key = random.choice(openai_api_key)
+    time.sleep()
 
     try:
-        response = openai.ChatCompletion.create(
-            model=gpt_parameter["engine"],
-            messages=[{"role": "user", "content": prompt}],
-            temperature=gpt_parameter["temperature"],
-            max_tokens=gpt_parameter["max_tokens"],
-            top_p=gpt_parameter["top_p"],
-            frequency_penalty=gpt_parameter["frequency_penalty"],
-            presence_penalty=gpt_parameter["presence_penalty"],
-            stream=gpt_parameter["stream"],
-            stop=gpt_parameter["stop"], )
-        time.sleep(1)
-        return response.choices[0]['message']['content']
+        # llm call
+        llm = Tongyi()
+        llm.model_name = 'qwen-max'
+        messages=[{"role": "user", "content": prompt}]
+        llm.top_p = gpt_parameter["top_p"]
+        llm.model_kwargs = gpt_parameter
+        llm.streaming = True if (gpt_parameter["stream"]==True or gpt_parameter["stream"]=='true') else False
+
+        response = llm.invoke(messages)
+        return response
     except Exception as e:
         print(f"TOKEN LIMIT EXCEEDED: {e}")
-        return "TOKEN LIMIT EXCEEDED"
+        return f"TOKEN LIMIT EXCEEDED"
+
+
+    # temp_sleep()
+    # openai.api_key = random.choice(openai_api_key)
+
+    # try:
+    #     response = openai.ChatCompletion.create(
+    #         model=gpt_parameter["engine"],
+    #         messages=[{"role": "user", "content": prompt}],
+    #         temperature=gpt_parameter["temperature"],
+    #         max_tokens=gpt_parameter["max_tokens"],
+    #         top_p=gpt_parameter["top_p"],
+    #         frequency_penalty=gpt_parameter["frequency_penalty"],
+    #         presence_penalty=gpt_parameter["presence_penalty"],
+    #         stream=gpt_parameter["stream"],
+    #         stop=gpt_parameter["stop"], )
+    #     time.sleep(1)
+    #     return response.choices[0]['message']['content']
+    # except Exception as e:
+    #     print(f"TOKEN LIMIT EXCEEDED: {e}")
+    #     return "TOKEN LIMIT EXCEEDED"
 
 
 def generate_prompt(curr_input, prompt_lib_file):
@@ -274,7 +321,7 @@ def safe_generate_response(prompt,
                            verbose=False):
     if verbose:
         print(prompt)
-    openai.api_key = random.choice(openai_api_key)
+    # openai.api_key = random.choice(openai_api_key)
 
     for i in range(repeat):
         curr_gpt_response = GPT_request(prompt, gpt_parameter)
@@ -288,16 +335,16 @@ def safe_generate_response(prompt,
     return fail_safe_response
 
 
-def get_embedding(text, model="text-embedding-ada-002"):
-    text = text.replace("\n", " ")
-    if not text:
-        text = "this is blank"
-    return openai.Embedding.create(
-        input=[text], model=model)['data'][0]['embedding']
+# def get_embedding(text, model="text-embedding-ada-002"):
+#     text = text.replace("\n", " ")
+#     if not text:
+#         text = "this is blank"
+#     return openai.Embedding.create(
+#         input=[text], model=model)['data'][0]['embedding']
 
 
 if __name__ == '__main__':
-    gpt_parameter = {"engine": "gpt-3.5-turbo", "max_tokens": 50,
+    gpt_parameter = {"engine": "qwen-max", "max_tokens": 50,
                      "temperature": 0, "top_p": 1, "stream": False,
                      "frequency_penalty": 0, "presence_penalty": 0,
                      "stop": ['"']}

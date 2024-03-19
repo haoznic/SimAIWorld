@@ -6,14 +6,14 @@
 """
 import json
 import random
-import openai
+# import openai
 import time
 
 from utils import *
 
-openai.api_key = random.choice(openai_api_key)
+# openai.api_key = random.choice(openai_api_key)
 
-from litellm import completion
+# from litellm import completion
 
 
 def temp_sleep(seconds=0.1):
