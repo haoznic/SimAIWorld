@@ -103,3 +103,4 @@ ENV/
 # Rope project settings
 .ropeproject
 reverie/your api.txt
+reverie/config.json

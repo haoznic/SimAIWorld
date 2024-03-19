@@ -10,9 +10,12 @@ os.environ["OPENAI_API_KEY"] = "openai key"
 os.environ["COHERE_API_KEY"] = "cohere key"
 os.environ["ANTHROPIC_API_KEY"] = "anthropic key"
 
-os.environ["DASHSCOPE_API_KEY"] = "your api"
-os.environ["ALIBABA_CLOUD_ACCESS_KEY_ID"] = "your api"
-os.environ["ALIBABA_CLOUD_ACCESS_KEY_SECRET"] = "your api"
+import json
+
+settings = json.loads("config.json")
+os.environ["DASHSCOPE_API_KEY"] = settings["DASHSCOPE_API_KEY"]
+os.environ["ALIBABA_CLOUD_ACCESS_KEY_ID"] =settings["ALIBABA_CLOUD_ACCESS_KEY_ID"]
+os.environ["ALIBABA_CLOUD_ACCESS_KEY_SECRET"] = settings["ALIBABA_CLOUD_ACCESS_KEY_SECRET"]
 
 messages = [{"content": "Hello, how are you?", "role": "user"}]
 
